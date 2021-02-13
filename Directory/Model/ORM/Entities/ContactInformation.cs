@@ -14,7 +14,7 @@ namespace Directory.Model.ORM.Entities
         public int PersonID { get; set; }
         public string InformationContent{ get; set; }
 
-        [ForeignKey("PersonID")]
-        public Person Person { get; set; }
+        //[ForeignKey("PersonID")]
+        //public Person Person { get; set; }
     }
 }

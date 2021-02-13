@@ -7,6 +7,7 @@ using Directory.Model.ORM.Entities;
 using Directory.Model.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Directory.Controllers
 {
@@ -22,10 +23,24 @@ namespace Directory.Controllers
         }
 
         [Route("anasayfa")]
-        public IActionResult Index()
+        public List<DirectoryListVM> Index()
         {
-            List<Person> people = _directorycontext.People.Where(a => a.IsDeleted == false).ToList();
-            return Ok(people);
+            
+            var people = _directorycontext.People.Where(a => a.IsDeleted == false).Select(q => new DirectoryListVM()
+            {
+                PersonID = q.ID,
+                PersonName = q.Name,
+                PersonSurname = q.Surname,
+                Company = q.Company,
+                ContactInfoList = _directorycontext.ContactInformation.ToList()
+                //ContactInfoList = _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList()
+
+            }).ToList();
+
+
+            //List<ContactInformation> contact= _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList();
+
+            return people;
         }
 
         [Route("kisiekle")]
@@ -66,6 +81,49 @@ namespace Directory.Controllers
             {
                 return BadRequest("There is no ID you are looking for!!!");
             }
+
+        }
+
+        [Route("contactekle")]
+        public IActionResult ContactAdd([FromForm] ContactInfoVM contactInfo)
+        {
+
+            //Person person = _directorycontext.People.FirstOrDefault(a =>a.ID == contactInfo.PersonID);
+
+
+            if (ModelState.IsValid)
+            {
+                ContactInformation contact = new ContactInformation();
+
+                contact.PersonID = contactInfo.PersonID;
+                contact.Phone = contactInfo.Phone;
+                contact.EMail = contactInfo.EMail;
+                contact.Location = contactInfo.Location;
+                contact.InformationContent = contactInfo.InformationContent;
+
+                _directorycontext.ContactInformation.Add(contact);
+                _directorycontext.SaveChanges();
+
+                return Ok(contact);
+
+            }
+            else
+            {
+                return BadRequest("There is no ID you are looking for!!!");
+            }
+
+            //if (person != null)
+            //{
+
+            //    person.ContactInfoList.Phone = contactInfo.Phone;
+            //    _directorycontext.SaveChanges();
+
+            //    return Ok(person);
+            //}
+            //else
+            //{
+            //    return BadRequest("There is no ID you are looking for!!!");
+            //}
 
         }
     }

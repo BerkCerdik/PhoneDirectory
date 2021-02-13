@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Directory
 {
@@ -26,7 +27,7 @@ namespace Directory
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson( opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddDbContext<DirectoryContext>();
         }
 
@@ -46,8 +47,8 @@ namespace Directory
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllerRoute("default", "{Controller=Home}/{Zction=Index}");
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute("default", "{Controller=Home}/{Action=Index}");
+                //endpoints.MapControllers();
             });
         }
     }

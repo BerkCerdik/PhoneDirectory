@@ -18,8 +18,8 @@ namespace Directory.Model.ViewModels
         [Required]
         public string InformationContent { get; set; }
 
-        //[Required]
-        //public Person Person { get; set; }
+        [Required]
+        public int PersonID { get; set; }
 
         //[Required]
         //public int PersonID { get; set; }
