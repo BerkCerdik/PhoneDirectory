@@ -49,6 +49,24 @@ namespace Directory.Controllers
             }
         }
 
-       
+        [Route("kisisil")]
+        public IActionResult PeaopleDelete([FromForm] PersonDeleteVM personDelete)
+        {
+
+            Person person= _directorycontext.People.Find(personDelete.ID);
+
+            if (person != null)
+            {
+                person.IsDeleted = true;
+                _directorycontext.SaveChanges();
+
+                return Ok(person);
+            }
+            else
+            {
+                return BadRequest("There is no ID you are looking for!!!");
+            }
+
+        }
     }
 }
