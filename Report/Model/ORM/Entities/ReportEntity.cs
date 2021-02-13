@@ -14,31 +14,35 @@ namespace Report.Model.ORM.Entities
         public int NumberOfPerson { get; set; }
         public int NumberOfPhone { get; set; }
 
+        public bool ReportStatus { get; set; }
 
-        private bool _status = false;
-        public bool ReportStatus 
-        {
-            get
-            {
-                return _status;
-            }
-            set
-            {
-                _status = value;
-            }
-        }
+        //private bool _status = false;
+        //public bool ReportStatus
+        //{
+        //    get
+        //    {
+        //        return _status;
+        //    }
+        //    set
+        //    {
+        //        _status = value;
+        //    }
+        //}
 
-        private DateTime _date = DateTime.Now;
-        public DateTime RequestDate
-        {
-            get
-            {
-                return _date;
-            }
-            set
-            {
-                _date = value;
-            }
-        }
+        public DateTime RequestDate { get; set; }
+
+
+        //private DateTime _date = DateTime.Now;
+        //public DateTime RequestDate
+        //{
+        //    get
+        //    {
+        //        return _date;
+        //    }
+        //    set
+        //    {
+        //        _date = value;
+        //    }
+        //}
     }
 }

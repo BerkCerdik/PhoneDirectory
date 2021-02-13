@@ -46,6 +46,7 @@ namespace Directory
 
             app.UseEndpoints(endpoints =>
             {
+                //endpoints.MapControllerRoute("default", "{Controller=Home}/{Zction=Index}");
                 endpoints.MapControllers();
             });
         }

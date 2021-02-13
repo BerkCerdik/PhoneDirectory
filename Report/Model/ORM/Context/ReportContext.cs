@@ -17,5 +17,30 @@ namespace Report.Model.ORM.Context
 
         public DbSet<ReportEntity> Reports{ get; set; }
 
+        // ReportStatus ve RequestDate SaveChanges override edilerek ayarlandı.
+        public override int SaveChanges()
+        {
+            var now = DateTime.Now;
+
+            foreach (var changedEntity in ChangeTracker.Entries())
+            {
+                if (changedEntity.Entity is ReportEntity entity)
+                {
+                    switch (changedEntity.State)
+                    {
+                        case EntityState.Added:
+                            entity.RequestDate = now;
+                            entity.ReportStatus = false;
+                            break;
+
+                        //case EntityState.Modified:
+                        //    entity.ReportStatus = true;
+                        //    break;
+                    }
+                }
+            }
+
+            return base.SaveChanges();
+        }
     }
 }

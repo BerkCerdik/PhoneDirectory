@@ -12,6 +12,7 @@ namespace Directory.Model.ORM.Entities
         public string EMail { get; set; }
         public string Location { get; set; }
         public int PersonID { get; set; }
+        public string InformationContent{ get; set; }
 
         [ForeignKey("PersonID")]
         public Person Person { get; set; }
