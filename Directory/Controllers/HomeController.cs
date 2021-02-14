@@ -22,26 +22,56 @@ namespace Directory.Controllers
             _directorycontext = directorycontext;
         }
 
+
+
         [Route("anasayfa")]
         public List<DirectoryListVM> Index()
         {
-            
-            var people = _directorycontext.People.Where(a => a.IsDeleted == false).Select(q => new DirectoryListVM()
+
+            var people = _directorycontext.People.Where(c => c.IsDeleted == false).Select(q => new DirectoryListVM()
             {
                 PersonID = q.ID,
                 PersonName = q.Name,
                 PersonSurname = q.Surname,
                 Company = q.Company,
-                ContactInfoList = _directorycontext.ContactInformation.ToList()
+                ContactInfoList = q.ContactInformation
+                //ContactInfoList = _directorycontext.ContactInformation.ToList()
                 //ContactInfoList = _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList()
 
             }).ToList();
-
 
             //List<ContactInformation> contact= _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList();
 
             return people;
         }
+
+
+
+
+
+        [Route("kisilist/{id}")]
+        public IActionResult PeopleList(int id)
+        //public List<PeopleListVM> PeopleList(int id)
+        {
+            var people = _directorycontext.People.Where(c => c.IsDeleted == false).FirstOrDefault(c => c.ID == id);
+            PeopleListVM peopleList = new PeopleListVM();
+
+            if (people != null)
+            {
+                peopleList.PeopleID = people.ID;
+                peopleList.PeopleName = people.Name;
+                peopleList.PeopleSurname = people.Surname;
+                peopleList.PeopleCompany = people.Company;
+
+                return Ok(peopleList);
+            }
+            else
+            {
+                return BadRequest("There is no ID you are looking for!!!");
+            }
+        }
+
+
 
         [Route("kisiekle")]
         public IActionResult PeopleAdd([FromForm] PersonVM personVM)
@@ -68,7 +98,7 @@ namespace Directory.Controllers
         public IActionResult PeaopleDelete([FromForm] PersonDeleteVM personDelete)
         {
 
-            Person person= _directorycontext.People.Find(personDelete.ID);
+            Person person = _directorycontext.People.Find(personDelete.ID);
 
             if (person != null)
             {
@@ -111,20 +141,6 @@ namespace Directory.Controllers
             {
                 return BadRequest("There is no ID you are looking for!!!");
             }
-
-            //if (person != null)
-            //{
-
-            //    person.ContactInfoList.Phone = contactInfo.Phone;
-            //    _directorycontext.SaveChanges();
-
-            //    return Ok(person);
-            //}
-            //else
-            //{
-            //    return BadRequest("There is no ID you are looking for!!!");
-            //}
-
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Directory.Model.ORM.Entities
         public string Surname { get; set; }
         public string Company { get; set; }
 
-        public List<ContactInformation> ContactInfoList { get; set; }
+        public List<ContactInformation> ContactInformation { get; set; }
     }
 }
