@@ -7,6 +7,7 @@ namespace Directory.Model.ViewModels
 {
     public class ContactDeleteVM
     {
-        public  int ContactID { get; set; }
+        public  int ID { get; set; }
+
     }
 }

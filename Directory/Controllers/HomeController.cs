@@ -34,19 +34,27 @@ namespace Directory.Controllers
                 PersonName = q.Name,
                 PersonSurname = q.Surname,
                 Company = q.Company,
-                ContactInfoList = q.ContactInformation
-                //ContactInfoList = _directorycontext.ContactInformation.ToList()
-                //ContactInfoList = _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList()
+                ContactInfoList = q.ContactInformation.Where(q => q.IsDeleted == false).ToList()
 
             }).ToList();
-
-            //List<ContactInformation> contact= _directorycontext.ContactInformation.Include(b => b.Person).Where(a => a.PersonID == a.Person.ID).ToList();
 
             return people;
         }
 
+        [Route("kisiler")]
+        public List<DirectoryListVM> People()
+        {
 
+            var people = _directorycontext.People.Where(c => c.IsDeleted == false).Select(q => new DirectoryListVM()
+            {
+                PersonID = q.ID,
+                PersonName = q.Name,
+                PersonSurname = q.Surname,
+                Company = q.Company
+            }).ToList();
 
+            return people;
+        }
 
 
         [Route("kisilist/{id}")]
@@ -114,7 +122,7 @@ namespace Directory.Controllers
 
         }
 
-        [Route("contactekle")]
+        [Route("iletisimekle")]
         public IActionResult ContactAdd([FromForm] ContactInfoVM contactInfo)
         {
 
@@ -142,5 +150,26 @@ namespace Directory.Controllers
                 return BadRequest("There is no ID you are looking for!!!");
             }
         }
+
+        [Route("iletisimsil")]
+        public IActionResult ContactDelete([FromForm] ContactDeleteVM contactDelete)
+        {
+
+            ContactInformation contactInformation  = _directorycontext.ContactInformation.Find(contactDelete.ID);
+
+            if (contactInformation != null)
+            {
+                contactInformation.IsDeleted = true;
+                _directorycontext.SaveChanges();
+
+                return Ok(contactInformation);
+
+            }
+            else
+            {
+                return BadRequest("There is no ID you are looking for!!!");
+            }
+        }
+
     }
 }
