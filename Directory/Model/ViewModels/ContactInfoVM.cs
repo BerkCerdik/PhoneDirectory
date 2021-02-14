@@ -17,7 +17,6 @@ namespace Directory.Model.ViewModels
         public string Location { get; set; }      
         [Required]
         public string InformationContent { get; set; }
-
         [Required]
         public int PersonID { get; set; }
 

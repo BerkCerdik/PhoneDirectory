@@ -25,6 +25,7 @@ namespace Directory.Controllers
 
 
         [Route("anasayfa")]
+        [HttpGet]
         public List<DirectoryListVM> Index()
         {
 
@@ -42,6 +43,7 @@ namespace Directory.Controllers
         }
 
         [Route("kisiler")]
+        [HttpGet]
         public List<DirectoryListVM> People()
         {
 
@@ -58,30 +60,33 @@ namespace Directory.Controllers
 
 
         [Route("kisilist/{id}")]
-        public IActionResult PeopleList(int id)
-        //public List<PeopleListVM> PeopleList(int id)
+        [HttpGet]
+        public PeopleListVM PeopleListDetail(int id)
         {
-            var people = _directorycontext.People.Where(c => c.IsDeleted == false).FirstOrDefault(c => c.ID == id);
-            PeopleListVM peopleList = new PeopleListVM();
+            var people = _directorycontext.People.FirstOrDefault(c => c.ID == id && c.IsDeleted == false);
 
             if (people != null)
             {
-                peopleList.PeopleID = people.ID;
-                peopleList.PeopleName = people.Name;
-                peopleList.PeopleSurname = people.Surname;
-                peopleList.PeopleCompany = people.Company;
+                var peopleList = _directorycontext.People.Where(q => q.IsDeleted == false).Select(q => new PeopleListVM()
+                {
+                    PeopleID = q.ID,
+                    PeopleName = q.Name,
+                    PeopleSurname = q.Surname,
+                    PeopleCompany = q.Company,
+                    IsDeleted = q.IsDeleted,
+                    ContactInfoList = q.ContactInformation.Where(q => q.IsDeleted == false).ToList()
+                }).FirstOrDefault(q => q.PeopleID == id);
 
-                return Ok(peopleList);
+                return peopleList;
             }
             else
             {
-                return BadRequest("There is no ID you are looking for!!!");
+                return null;
             }
         }
 
-
-
         [Route("kisiekle")]
+        [HttpPost]
         public IActionResult PeopleAdd([FromForm] PersonVM personVM)
         {
             Person person = new Person();
@@ -103,6 +108,7 @@ namespace Directory.Controllers
         }
 
         [Route("kisisil")]
+        [HttpPost]
         public IActionResult PeaopleDelete([FromForm] PersonDeleteVM personDelete)
         {
 
@@ -123,11 +129,9 @@ namespace Directory.Controllers
         }
 
         [Route("iletisimekle")]
+        [HttpPost]
         public IActionResult ContactAdd([FromForm] ContactInfoVM contactInfo)
         {
-
-            //Person person = _directorycontext.People.FirstOrDefault(a =>a.ID == contactInfo.PersonID);
-
 
             if (ModelState.IsValid)
             {
@@ -152,6 +156,7 @@ namespace Directory.Controllers
         }
 
         [Route("iletisimsil")]
+        [HttpPost]
         public IActionResult ContactDelete([FromForm] ContactDeleteVM contactDelete)
         {
 

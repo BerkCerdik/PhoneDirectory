@@ -12,6 +12,8 @@ namespace Directory.Model.ViewModels
         public string PeopleName { get; set; }
         public string PeopleSurname { get; set; }
         public string PeopleCompany { get; set; }
+        public bool IsDeleted { get; set; }
+        public List<ContactInformation> ContactInfoList { get; set; }
 
     }
 }
