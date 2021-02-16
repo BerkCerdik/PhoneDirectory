@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Confluent.Kafka;
 using Directory.Model.ORM.Context;
 using Directory.Model.ORM.Entities;
 using Directory.Model.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Directory.Controllers
 {
@@ -16,10 +18,12 @@ namespace Directory.Controllers
     public class HomeController : ControllerBase
     {
         private readonly DirectoryContext _directorycontext;
+        private ProducerConfig _config;
 
-        public HomeController(DirectoryContext directorycontext)
+        public HomeController(DirectoryContext directorycontext, ProducerConfig config)
         {
             _directorycontext = directorycontext;
+            this._config = config;
         }
 
 
@@ -41,6 +45,20 @@ namespace Directory.Controllers
 
             return people;
         }
+
+        [HttpPost("Send")]
+        public async Task<IActionResult> Get(string topic)
+        {
+            var kisiList = People();
+            string serializedKisi = JsonConvert.SerializeObject(kisiList);
+            using (var producer = new ProducerBuilder<Null, string>(_config).Build())
+            {
+                await producer.ProduceAsync(topic, new Message<Null, string> { Value = serializedKisi });
+                producer.Flush(TimeSpan.FromSeconds(10));
+                return Ok(true);
+            }
+        }
+
 
         [Route("kisiler")]
         [HttpGet]
