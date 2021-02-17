@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Report.Model.ORM.Context;
+using Confluent.Kafka;
 
 namespace Report
 {
@@ -26,6 +27,18 @@ namespace Report
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            var consumerConfig = new ConsumerConfig
+            {
+                GroupId = "gid-consumer",
+                BootstrapServers = "localhost:9092",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+            Configuration.Bind("consumer", consumerConfig);
+
+            services.AddSingleton<ConsumerConfig>(consumerConfig);
+
             services.AddControllers();
             services.AddDbContext<ReportContext>();
         }
